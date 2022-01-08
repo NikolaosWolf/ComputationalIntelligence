@@ -1,4 +1,4 @@
-﻿using System;
+﻿using ComputationalIntelligence.Interface;
 
 namespace ComputationalIntelligence
 {
@@ -6,7 +6,10 @@ namespace ComputationalIntelligence
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var terminal = new Terminal();
+            terminal.Initiate();
+
+            return;
         }
     }
 }
