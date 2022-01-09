@@ -16,8 +16,8 @@ namespace ComputationalIntelligence.DataSets
 
             var examples = new ExampleResult
             {
-                LearningSet = GenerateLearningSet(rnd),
-                ControlSet = GenerateControlSet(rnd)
+                TrainingSet = GenerateLearningSet(rnd),
+                TestSet = GenerateControlSet(rnd)
             };
 
             return examples;

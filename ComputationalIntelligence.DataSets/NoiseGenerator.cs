@@ -7,11 +7,11 @@ namespace ComputationalIntelligence.DataSets
 {
     public class NoiseGenerator
     {
-        public ISet<Example> GenerateNoise(ISet<Example> learningSet)
+        public ISet<Example> GenerateNoise(ISet<Example> trainingSet)
         {
             var rnd = new Random();
 
-            foreach (Example example in learningSet)
+            foreach (Example example in trainingSet)
             {
                 double probability = rnd.NextDouble();
 
@@ -19,7 +19,7 @@ namespace ComputationalIntelligence.DataSets
                     SetRandomCategory(example, rnd);
             }
 
-            return learningSet;
+            return trainingSet;
         }
 
         private void SetRandomCategory(Example example, Random rnd)

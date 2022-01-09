@@ -6,12 +6,12 @@ namespace ComputationalIntelligence.DataSets.Models
     {
         public ExampleResult()
         {
-            LearningSet = new HashSet<Example>();
-            ControlSet = new HashSet<Example>();
+            TrainingSet = new HashSet<Example>();
+            TestSet = new HashSet<Example>();
         }
 
-        public ISet<Example> LearningSet { get; set; }
+        public ISet<Example> TrainingSet { get; set; }
 
-        public ISet<Example> ControlSet { get; set; }
+        public ISet<Example> TestSet { get; set; }
     }
 }
