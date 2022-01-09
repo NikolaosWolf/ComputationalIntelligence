@@ -8,6 +8,8 @@ namespace ComputationalIntelligence.Exercises
         {
             switch (exercise)
             {
+                case 1:
+                    return new Exercise1();
                 default:
                     return null;
             }
