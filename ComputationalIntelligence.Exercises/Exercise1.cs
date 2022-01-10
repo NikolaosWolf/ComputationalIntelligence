@@ -5,6 +5,7 @@ using ComputationalIntelligence.DataSets.Models;
 using ComputationalIntelligence.Exercises.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ComputationalIntelligence.Exercises
 {
@@ -16,6 +17,7 @@ namespace ComputationalIntelligence.Exercises
 
             LoadDefaultSettings();
             ExecuteProgram1(examples.TrainingSet, examples.TestSet);
+            ExecuteProgram2(examples.TrainingSet, examples.TestSet);
         }
 
         private void LoadDefaultSettings()
@@ -44,7 +46,40 @@ namespace ComputationalIntelligence.Exercises
         {
             int[] layers = { Settings1.d, Settings1.H1, Settings1.H2, Settings1.K };
 
-            var perceptron = new Perceptron(layers);
+            double learningRate = 0.3;
+            double maxError = 0.0001;
+            int epochs = 700;
+
+            var perceptron = new Perceptron(layers, Settings1.F);
+
+            while (!perceptron.Learn(trainingSet.Select(s => new double[] { s.X1, s.X2}).ToList(), 
+                                     trainingSet.Select(s => new double[] { (double)s.Category}).ToList(),
+                                     learningRate,
+                                     maxError,
+                                     epochs))
+            {
+                perceptron = new Perceptron(layers, Settings1.F);
+            }
+        }
+
+        private void ExecuteProgram2(ISet<Example> trainingSet, ISet<Example> testSet)
+        {
+            int[] layers = { Settings1.d, Settings1.H1, Settings1.H2, Settings1.H3, Settings1.K };
+
+            double learningRate = 0.3;
+            double maxError = 0.0001;
+            int epochs = 700;
+
+            var perceptron = new Perceptron(layers, Settings1.F);
+
+            while (!perceptron.Learn(trainingSet.Select(s => new double[] { s.X1, s.X2 }).ToList(),
+                                     trainingSet.Select(s => new double[] { (double)s.Category }).ToList(),
+                                     learningRate,
+                                     maxError,
+                                     epochs))
+            {
+                perceptron = new Perceptron(layers, Settings1.F);
+            }
         }
     }
 }
