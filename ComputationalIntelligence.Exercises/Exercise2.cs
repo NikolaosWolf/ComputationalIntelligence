@@ -19,20 +19,18 @@ namespace ComputationalIntelligence.Exercises
 
             var clusters = ExecuteKMeans(points);
 
-            int count = 1;
-            double errorSum = 0;
+            int imageId = 1;
+            double clusteringError = 0;
             foreach (var cluster in clusters)
             {
-                //Console.WriteLine($"{cluster.Center.X1}, {cluster.Center.X2}");
-
                 var dataSet = CreateDataSet(cluster.Points);
-                CreateChart(dataSet, count);
-                count++;
+                CreateChart(dataSet, imageId);
+                imageId++;
 
-                errorSum = cluster.Points.Sum(p => Functions.EuclideanDistance(cluster.Center.X1, cluster.Center.X2, p.X1, p.X2));
+                clusteringError += cluster.Points.Sum(p => Functions.EuclideanDistance(cluster.Center.X1, cluster.Center.X2, p.X1, p.X2));
             }
 
-            Console.WriteLine($"Clustering Error: {errorSum}");
+            Console.WriteLine($"Clustering Error: {Math.Round(clusteringError, 2)}");
         }
 
         private ISet<Core.Models.Point> CreatePoints()
@@ -45,9 +43,7 @@ namespace ComputationalIntelligence.Exercises
 
         private ISet<Cluster> ExecuteKMeans(ISet<Core.Models.Point> totalPoints)
         {
-            var rnd = new Random();
-
-            var clusters = InitializeClusters(totalPoints, Settings2.M, rnd);
+            var clusters = InitializeClusters(totalPoints, Settings2.M);
 
             int count = 0;
             bool changed = true;
@@ -63,25 +59,36 @@ namespace ComputationalIntelligence.Exercises
             return clusters;
         }
 
-        private ISet<Cluster> InitializeClusters(ISet<Core.Models.Point> totalPoints, int numberOfClusters, Random rnd)
+        private ISet<Cluster> InitializeClusters(ISet<Core.Models.Point> totalPoints, int numberOfClusters)
         {
             var clusters = new HashSet<Cluster>(numberOfClusters);
+
+            var existingCenters = new HashSet<Core.Models.Point>(numberOfClusters);
 
             for (int i = 0; i < numberOfClusters; i++)
             {
                 clusters.Add(new Cluster
                 {
                     Id = i + 1,
-                    Center = InitializeCenter(totalPoints, rnd)
+                    Center = InitializeCenter(totalPoints, existingCenters)
                 });
             }
 
             return clusters;
         }
 
-        private Core.Models.Point InitializeCenter(ISet<Core.Models.Point> totalPoints, Random rnd)
+        private Core.Models.Point InitializeCenter(ISet<Core.Models.Point> totalPoints, ISet<Core.Models.Point> existingCenters)
         {
-            return totalPoints.ElementAt(rnd.Next(1201));
+            var rnd = new Random();
+
+            var center = totalPoints.ElementAt(rnd.Next(1200));
+
+            while (existingCenters.Contains(center))
+                center = totalPoints.ElementAt(rnd.Next(1200));
+
+            existingCenters.Add(center);
+
+            return center;
         }
 
         private void UpdateClustering(ISet<Core.Models.Point> totalPoints, ISet<Cluster> clusters)
