@@ -1,4 +1,4 @@
-﻿using ComputationalIntelligence.DataSets.Models;
+﻿using ComputationalIntelligence.Core.Models;
 using System;
 using System.Collections.Generic;
 
@@ -6,7 +6,7 @@ namespace ComputationalIntelligence.DataSets
 {
     public class PointGenerator
     {
-        public PointResult Generate()
+        public ISet<Point> Generate()
         {
             var rnd = new Random();
 
@@ -24,10 +24,7 @@ namespace ComputationalIntelligence.DataSets
             AddPoints(points, 150, 2.0, 0.00, 2.0, 0.00, rnd);
 
 
-            return new PointResult
-            {
-                Points = points
-            };
+            return points;
         }
 
         private void AddPoints(ISet<Point> points, int size, double rangeX1, double offsetX1, double rangeX2, double offsetX2, Random rnd)

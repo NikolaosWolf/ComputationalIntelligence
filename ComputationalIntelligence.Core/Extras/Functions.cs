@@ -36,7 +36,7 @@ namespace ComputationalIntelligence.Core.Extras
         /// <returns></returns>
         public static double EuclideanDistance(double x1, double y1, double x2, double y2)
         {
-            return Math.Sqrt(Math.Pow(x1 - y1, 2) + Math.Pow(x2 - y2, 2));
+            return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
         }
     }
 }

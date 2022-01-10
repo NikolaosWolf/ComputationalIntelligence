@@ -1,7 +1,6 @@
 ﻿using ComputationalIntelligence.Core.Extras;
 using ComputationalIntelligence.Core.Models;
 using ComputationalIntelligence.DataSets;
-using ComputationalIntelligence.DataSets.Models;
 using ComputationalIntelligence.Exercises.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,20 +15,27 @@ namespace ComputationalIntelligence.Exercises
     {
         public void Execute()
         {
-            var pointResult = CreatePoints();
+            var points = CreatePoints();
 
-            var clusters = ExecuteKMeans(pointResult.Points);
+            var clusters = ExecuteKMeans(points);
 
+            int count = 1;
+            double errorSum = 0;
             foreach (var cluster in clusters)
             {
-                Console.WriteLine($"{cluster.Center.X1}, {cluster.Center.X2}");
+                //Console.WriteLine($"{cluster.Center.X1}, {cluster.Center.X2}");
+
+                var dataSet = CreateDataSet(cluster.Points);
+                CreateChart(dataSet, count);
+                count++;
+
+                errorSum = cluster.Points.Sum(p => Functions.EuclideanDistance(cluster.Center.X1, cluster.Center.X2, p.X1, p.X2));
             }
 
-            var dataSet = CreateDataSet(clusters.SelectMany(c => c.Points).ToHashSet());
-            CreateChart(dataSet);
+            Console.WriteLine($"Clustering Error: {errorSum}");
         }
 
-        private PointResult CreatePoints()
+        private ISet<Core.Models.Point> CreatePoints()
         {
             var generator = new PointGenerator();
             var points = generator.Generate();
@@ -37,58 +43,101 @@ namespace ComputationalIntelligence.Exercises
             return points;
         }
 
-        private List<Cluster> ExecuteKMeans(ISet<DataSets.Models.Point> totalPoints)
-        {
-            var clusters = CreateClusters(totalPoints, Settings2.M);
-
-            foreach (var point in totalPoints)
-            {
-                var cluster = FindClusterWithMinimumDistance(clusters, point);
-                cluster.Points.Add(point);
-            }
-
-            return clusters;
-        }
-
-        private List<Cluster> CreateClusters(ISet<DataSets.Models.Point> totalPoints, int numberOfClusters)
+        private ISet<Cluster> ExecuteKMeans(ISet<Core.Models.Point> totalPoints)
         {
             var rnd = new Random();
 
-            var clusters = new List<Cluster>(numberOfClusters);
-            for (int i = 0; i < numberOfClusters; i++)
-                clusters.Add(CreateCluster(totalPoints, rnd));
+            var clusters = InitializeClusters(totalPoints, Settings2.M, rnd);
+
+            int count = 0;
+            bool changed = true;
+
+            while (changed == true && count < Settings2.SanityCheck)
+            {
+                UpdateClustering(totalPoints, clusters);
+                changed = UpdateCenters(clusters);
+
+                count++;
+            }
 
             return clusters;
         }
 
-        private Cluster CreateCluster(ISet<DataSets.Models.Point> totalPoints, Random rnd)
+        private ISet<Cluster> InitializeClusters(ISet<Core.Models.Point> totalPoints, int numberOfClusters, Random rnd)
         {
-            return new Cluster
+            var clusters = new HashSet<Cluster>(numberOfClusters);
+
+            for (int i = 0; i < numberOfClusters; i++)
             {
-                Center = totalPoints.ElementAt(rnd.Next(1201))
-            };
+                clusters.Add(new Cluster
+                {
+                    Id = i + 1,
+                    Center = InitializeCenter(totalPoints, rnd)
+                });
+            }
+
+            return clusters;
         }
 
-        private Cluster FindClusterWithMinimumDistance(List<Cluster> clusters, DataSets.Models.Point point)
+        private Core.Models.Point InitializeCenter(ISet<Core.Models.Point> totalPoints, Random rnd)
         {
-            Cluster result = null;
-            double distance = 2;
+            return totalPoints.ElementAt(rnd.Next(1201));
+        }
+
+        private void UpdateClustering(ISet<Core.Models.Point> totalPoints, ISet<Cluster> clusters)
+        {
+            foreach (var point in totalPoints)
+            {
+                var distances = CalculateDistances(point, clusters);
+                var minimumDistance = distances.Single(d => d.Distance == distances.Min(d => d.Distance));
+
+                if (point.Cluster == null || point.Cluster.Id != minimumDistance.ClusterId)
+                {
+                    if (point.Cluster != null)
+                        clusters.Single(c => c.Id == point.Cluster.Id).Points.Remove(point);
+
+                    clusters.Single(c => c.Id == minimumDistance.ClusterId).Points.Add(point);
+                }
+
+            }
+        }
+
+        private List<(int ClusterId, double Distance)> CalculateDistances(Core.Models.Point point, ISet<Cluster> clusters)
+        {
+            var distances = new List<(int, double)>(clusters.Count());
+
+            foreach (var cluster in clusters)
+                distances.Add((cluster.Id, Functions.EuclideanDistance(cluster.Center.X1, cluster.Center.X2, point.X1, point.X2)));
+
+            return distances;
+        }
+
+        private bool UpdateCenters(ISet<Cluster> clusters)
+        {
+            bool changed = false;
 
             foreach (var cluster in clusters)
             {
-                double currentDistance = Functions.EuclideanDistance(cluster.Center.X1, cluster.Center.X2, point.X1, point.X2);
+                var meanX1 = cluster.Points.Sum(p => p.X1) / cluster.Points.Count();
+                var meanX2 = cluster.Points.Sum(p => p.X2) / cluster.Points.Count();
 
-                if (currentDistance < distance)
+                if (cluster.Center.X1 != meanX1)
                 {
-                    distance = currentDistance;
-                    result = cluster;
+                    cluster.Center.X1 = meanX1;
+                    changed = true;
+                }
+
+                if (cluster.Center.X2 != meanX2)
+                {
+                    cluster.Center.X2 = meanX2;
+                    changed = true;
                 }
             }
 
-            return result;
+            return changed;
         }
 
-        private DataSet CreateDataSet(ISet<DataSets.Models.Point> totalPoints)
+        private DataSet CreateDataSet(ISet<Core.Models.Point> totalPoints)
         {
             var dataSet = new DataSet();
             var dt = new DataTable();
@@ -103,7 +152,7 @@ namespace ComputationalIntelligence.Exercises
             return dataSet;
         }
 
-        private void AddRows(DataTable dataTable, ISet<DataSets.Models.Point> points)
+        private void AddRows(DataTable dataTable, ISet<Core.Models.Point> points)
         {
             foreach (var point in points)
             {
@@ -115,7 +164,7 @@ namespace ComputationalIntelligence.Exercises
             }
         }
 
-        private void CreateChart(DataSet dataSet)
+        private void CreateChart(DataSet dataSet, int id)
         {
             Chart chart = new Chart();
             chart.DataSource = dataSet.Tables[0];
@@ -124,7 +173,7 @@ namespace ComputationalIntelligence.Exercises
 
             Series serie1 = new Series();
             serie1.Name = "Serie1";
-            serie1.Color = Color.FromArgb(112, 255, 200);
+            serie1.Color = Color.Red;
             serie1.BorderColor = Color.FromArgb(164, 164, 164);
             serie1.ChartType = SeriesChartType.Point;
             serie1.BorderDashStyle = ChartDashStyle.Solid;
@@ -145,13 +194,13 @@ namespace ComputationalIntelligence.Exercises
             ca.BorderColor = Color.FromArgb(26, 59, 105);
             ca.BorderWidth = 0;
             ca.BorderDashStyle = ChartDashStyle.Solid;
-            ca.AxisX = new Axis() { Title = "X1"};
+            ca.AxisX = new Axis() { Title = "X1" };
             ca.AxisY = new Axis() { Title = "X2" };
             chart.ChartAreas.Add(ca);
 
             chart.DataBind();
 
-            chart.SaveImage(Settings2.OutputImagePath, ChartImageFormat.Png);
+            chart.SaveImage(Settings2.OutputImagePath + $"{id}" + Settings2.ImageType, ChartImageFormat.Png);
         }
     }
 }

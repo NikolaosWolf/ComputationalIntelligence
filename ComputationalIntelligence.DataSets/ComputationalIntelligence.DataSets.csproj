@@ -5,4 +5,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ComputationalIntelligence.Core\ComputationalIntelligence.Core.csproj" />
+  </ItemGroup>
+
 </Project>

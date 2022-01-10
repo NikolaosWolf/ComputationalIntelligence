@@ -1,5 +1,4 @@
-﻿using ComputationalIntelligence.DataSets.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ComputationalIntelligence.Core.Models
 {
@@ -9,6 +8,8 @@ namespace ComputationalIntelligence.Core.Models
         {
             Points = new HashSet<Point>();
         }
+
+        public int Id { get; set; }
 
         public Point Center { get; set; }
 
