@@ -1,13 +1,11 @@
-﻿using ComputationalIntelligence.Core.Extras;
+﻿using ComputationalIntelligence.Charts;
+using ComputationalIntelligence.Core.Extras;
 using ComputationalIntelligence.Core.Models;
 using ComputationalIntelligence.DataSets;
 using ComputationalIntelligence.Exercises.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace ComputationalIntelligence.Exercises
 {
@@ -16,21 +14,13 @@ namespace ComputationalIntelligence.Exercises
         public void Execute()
         {
             var points = CreatePoints();
-
             var clusters = ExecuteKMeans(points);
 
-            int imageId = 1;
-            double clusteringError = 0;
-            foreach (var cluster in clusters)
-            {
-                var dataSet = CreateDataSet(cluster.Points);
-                CreateChart(dataSet, imageId);
-                imageId++;
-
-                clusteringError += cluster.Points.Sum(p => Functions.EuclideanDistance(cluster.Center.X1, cluster.Center.X2, p.X1, p.X2));
-            }
+            double clusteringError = clusters.Sum(c => c.Points.Sum(p => Functions.EuclideanDistance(c.Center.X1, c.Center.X2, p.X1, p.X2)));
 
             Console.WriteLine($"Clustering Error: {Math.Round(clusteringError, 2)}");
+
+            CreateChart(clusters);
         }
 
         private ISet<Core.Models.Point> CreatePoints()
@@ -144,70 +134,11 @@ namespace ComputationalIntelligence.Exercises
             return changed;
         }
 
-        private DataSet CreateDataSet(ISet<Core.Models.Point> totalPoints)
+        private void CreateChart(ISet<Cluster> clusters)
         {
-            var dataSet = new DataSet();
-            var dt = new DataTable();
+            var chartGenerator = new ChartGenerator();
 
-            dt.Columns.Add("X1", typeof(double));
-            dt.Columns.Add("X2", typeof(double));
-
-            AddRows(dt, totalPoints);
-
-            dataSet.Tables.Add(dt);
-
-            return dataSet;
-        }
-
-        private void AddRows(DataTable dataTable, ISet<Core.Models.Point> points)
-        {
-            foreach (var point in points)
-            {
-                DataRow row = dataTable.NewRow();
-                row[0] = point.X1;
-                row[1] = point.X2;
-
-                dataTable.Rows.Add(row);
-            }
-        }
-
-        private void CreateChart(DataSet dataSet, int id)
-        {
-            Chart chart = new Chart();
-            chart.DataSource = dataSet.Tables[0];
-            chart.Width = 1280;
-            chart.Height = 1024;
-
-            Series serie1 = new Series();
-            serie1.Name = "Serie1";
-            serie1.Color = Color.Red;
-            serie1.BorderColor = Color.FromArgb(164, 164, 164);
-            serie1.ChartType = SeriesChartType.Point;
-            serie1.BorderDashStyle = ChartDashStyle.Solid;
-            serie1.BorderWidth = 1;
-            serie1.ShadowColor = Color.FromArgb(128, 128, 128);
-            serie1.ShadowOffset = 1;
-            serie1.IsValueShownAsLabel = false;
-            serie1.XValueMember = "X1";
-            serie1.YValueMembers = "X2";
-            serie1.Font = new Font("Tahoma", 8.0f);
-            serie1.BackSecondaryColor = Color.FromArgb(0, 102, 153);
-            serie1.LabelForeColor = Color.FromArgb(100, 100, 100);
-            chart.Series.Add(serie1);
-
-            ChartArea ca = new ChartArea();
-            ca.Name = "ChartArea1";
-            ca.BackColor = Color.White;
-            ca.BorderColor = Color.FromArgb(26, 59, 105);
-            ca.BorderWidth = 0;
-            ca.BorderDashStyle = ChartDashStyle.Solid;
-            ca.AxisX = new Axis() { Title = "X1" };
-            ca.AxisY = new Axis() { Title = "X2" };
-            chart.ChartAreas.Add(ca);
-
-            chart.DataBind();
-
-            chart.SaveImage(Settings2.OutputImagePath + $"{id}" + Settings2.ImageType, ChartImageFormat.Png);
+            chartGenerator.Generate(clusters, Settings2.OutputImagePath + Settings2.ImageType);
         }
     }
 }
