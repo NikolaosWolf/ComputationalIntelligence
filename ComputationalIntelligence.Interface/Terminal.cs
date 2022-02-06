@@ -43,7 +43,6 @@ namespace ComputationalIntelligence.Interface
         {
             Console.WriteLine("Please choose an exercise or exit:");
             Console.WriteLine("\t- Exercise 1: Multilevel Perceptron");
-            Console.WriteLine("\t- Exercise 2: K-Means");
             Console.WriteLine("\t- Exit");
         }
 
@@ -64,7 +63,7 @@ namespace ComputationalIntelligence.Interface
 
         private bool OptionIsValid(string option)
         {
-            byte[] validExercises = { 1, 2 };
+            byte[] validExercises = { 1 };
 
             return option.Equals("Exit", StringComparison.OrdinalIgnoreCase) ||
                    (byte.TryParse(option, out byte exerciseNumber) && validExercises.Contains(exerciseNumber));

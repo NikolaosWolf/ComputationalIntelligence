@@ -11,9 +11,6 @@ namespace ComputationalIntelligence.Exercises
                 case 1:
                     return new Exercise1();
 
-                case 2:
-                    return new Exercise2();
-
                 default:
                     return null;
             }

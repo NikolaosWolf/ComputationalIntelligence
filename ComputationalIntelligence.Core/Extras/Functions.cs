@@ -25,18 +25,5 @@ namespace ComputationalIntelligence.Core.Extras
         {
             return Math.Max(0, x);
         }
-
-        /// <summary>
-        /// Calculates the Euclidean Distance of two points (x1, y1) and (x2, y2).
-        /// </summary>
-        /// <param name="x1"></param>
-        /// <param name="y1"></param>
-        /// <param name="x2"></param>
-        /// <param name="y2"></param>
-        /// <returns></returns>
-        public static double EuclideanDistance(double x1, double y1, double x2, double y2)
-        {
-            return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
-        }
     }
 }

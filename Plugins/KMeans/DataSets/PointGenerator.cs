@@ -1,8 +1,6 @@
-﻿using ComputationalIntelligence.Core.Models;
-using System;
-using System.Collections.Generic;
+﻿using KMeans.Models;
 
-namespace ComputationalIntelligence.DataSets
+namespace KMeans.DataSets
 {
     public class PointGenerator
     {
@@ -27,14 +25,14 @@ namespace ComputationalIntelligence.DataSets
             return points;
         }
 
-        private void AddPoints(ISet<Point> points, int size, double rangeX1, double offsetX1, double rangeX2, double offsetX2, Random rnd)
+        private void AddPoints(ISet<Point> points, int size, double rangeX, double offsetX, double rangeY, double offsetY, Random rnd)
         {
             for (int i = 0; i < size; i++)
             {
                 points.Add(new Point
                 {
-                    X1 = (rnd.NextDouble() * rangeX1) + offsetX1,
-                    X2 = (rnd.NextDouble() * rangeX2) + offsetX2
+                    X = (rnd.NextDouble() * rangeX) + offsetX,
+                    Y = (rnd.NextDouble() * rangeY) + offsetY
                 });
             }
         }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31613.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputationalIntelligence", "ComputationalIntelligence\ComputationalIntelligence.csproj", "{E40464BF-469F-4020-8789-21E6464CDD8B}"
 EndProject
@@ -13,7 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputationalIntelligence.E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputationalIntelligence.DataSets", "ComputationalIntelligence.DataSets\ComputationalIntelligence.DataSets.csproj", "{E894EC7A-0BCE-4A3F-B0FC-BD4674A8D670}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalIntelligence.Charts", "ComputationalIntelligence.Charts\ComputationalIntelligence.Charts.csproj", "{C6CE92F9-F835-4120-B6EE-D722A29397E9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{6F578142-560A-4831-B7B8-2ED6F6F44B6B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KMeans", "Plugins\KMeans\KMeans.csproj", "{B25101A4-3705-4D83-BACB-52E4DA130A39}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{144CB8F6-DC0D-4BAB-82F7-7B39A67E2D0B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers", "Infrastructure\Helpers\Helpers.csproj", "{F9A2EA97-0745-4696-A3FC-B76795684293}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComputationalIntelligence.UI", "ComputationalIntelligence.UI\ComputationalIntelligence.UI.csproj", "{C10EFA92-3EDC-4525-A704-A2EA3D212CFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,13 +49,25 @@ Global
 		{E894EC7A-0BCE-4A3F-B0FC-BD4674A8D670}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E894EC7A-0BCE-4A3F-B0FC-BD4674A8D670}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E894EC7A-0BCE-4A3F-B0FC-BD4674A8D670}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6CE92F9-F835-4120-B6EE-D722A29397E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6CE92F9-F835-4120-B6EE-D722A29397E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6CE92F9-F835-4120-B6EE-D722A29397E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6CE92F9-F835-4120-B6EE-D722A29397E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B25101A4-3705-4D83-BACB-52E4DA130A39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B25101A4-3705-4D83-BACB-52E4DA130A39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B25101A4-3705-4D83-BACB-52E4DA130A39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B25101A4-3705-4D83-BACB-52E4DA130A39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9A2EA97-0745-4696-A3FC-B76795684293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9A2EA97-0745-4696-A3FC-B76795684293}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9A2EA97-0745-4696-A3FC-B76795684293}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9A2EA97-0745-4696-A3FC-B76795684293}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10EFA92-3EDC-4525-A704-A2EA3D212CFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10EFA92-3EDC-4525-A704-A2EA3D212CFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10EFA92-3EDC-4525-A704-A2EA3D212CFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10EFA92-3EDC-4525-A704-A2EA3D212CFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B25101A4-3705-4D83-BACB-52E4DA130A39} = {6F578142-560A-4831-B7B8-2ED6F6F44B6B}
+		{F9A2EA97-0745-4696-A3FC-B76795684293} = {144CB8F6-DC0D-4BAB-82F7-7B39A67E2D0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F3EA42D6-67DD-4F99-ABCD-C59AF732DB58}

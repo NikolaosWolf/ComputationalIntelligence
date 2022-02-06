@@ -5,7 +5,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ComputationalIntelligence.Charts\ComputationalIntelligence.Charts.csproj" />
 		<ProjectReference Include="..\ComputationalIntelligence.Core\ComputationalIntelligence.Core.csproj" />
 		<ProjectReference Include="..\ComputationalIntelligence.DataSets\ComputationalIntelligence.DataSets.csproj" />
 	</ItemGroup>

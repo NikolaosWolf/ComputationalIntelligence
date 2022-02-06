@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ComputationalIntelligence.Core.Models
+﻿namespace KMeans.Models
 {
     public class Cluster
     {

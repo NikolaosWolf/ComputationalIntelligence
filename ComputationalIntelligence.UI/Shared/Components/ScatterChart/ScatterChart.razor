@@ -1,0 +1,48 @@
+﻿@inject IJSRuntime JSRuntime
+
+<canvas id="@Id"></canvas>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public ScatterChartConfig Config { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Here we create an anonymous type with all the options
+        // that need to be sent to Chart.js
+        var config = new
+        {
+            Type = Config.Type,
+            Options = new
+            {
+                Responsive = true,
+                Scales = new
+                {
+                    X = new
+                    {
+                        Type = "linear",
+                        Position = "bottom"
+                    }
+                }
+            },
+            Data = new
+            {
+                Datasets = Config.Data.Datasets.Select(ds => new
+                {
+                    Label = ds.Label,
+                    BackgroundColor = ds.BackgroundColour,
+                    PointStyle = ds.PointStyle,
+                    PointRadius = ds.PointRadius,
+                    Data = ds.Data.Select(p => new { X = p.X, Y = p.Y }).ToArray()
+                })
+                .ToArray()
+            }
+        };
+
+        await JSRuntime.InvokeVoidAsync("setup", Id, config);
+    }
+}

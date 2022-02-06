@@ -1,0 +1,76 @@
+﻿@page "/kmeans"
+@using Helpers
+@using global::KMeans.DataSets
+@using global::KMeans.Code
+@using global::KMeans.Models
+
+<h2>KMeans</h2>
+<div>
+    <ScatterChart Id="kmeans-scatter"
+                  Config="@CreateChartConfig()">
+    </ScatterChart>
+</div>
+<div>
+    <p>Clustering Error: @CalculateClusteringError()</p>
+</div>
+
+@code {
+    private ISet<Point> Points { get; set; }
+
+    private ISet<Cluster> Clusters { get; set; }
+
+    private ScatterChartConfig CreateChartConfig()
+    {
+        GeneratePoints();
+        ExecuteKMeans();
+
+        var dataSets = new List<ScatterChartDataset>();
+        dataSets.Add(new ScatterChartDataset
+        {
+            Label = "Centers",
+            BackgroundColour = "black",
+            PointStyle = Settings.Styles[0],
+            PointRadius = 5,
+            Data = Clusters.Select(c => new ScatterChartPoint { X = c.Center.X, Y = c.Center.Y }).ToList()
+        });
+
+        for (var i = 0; i < Clusters.Count; i++)
+        {
+            dataSets.Add(new ScatterChartDataset
+            {
+                Label = $"Cluster {i + 1}",
+                BackgroundColour = Settings.Colors[i % Settings.Colors.Length],
+                PointStyle = Settings.Styles[i % Settings.Styles.Length],
+                PointRadius = 3,
+                Data = Clusters.ElementAt(i).Points.Select(p => new ScatterChartPoint {X = p.X, Y = p.Y}).ToList()
+            });
+        }
+
+        return new ScatterChartConfig
+            {
+                Data = new ScatterChartData
+                {
+                    Datasets = dataSets
+                }
+            };
+    }
+
+    private void GeneratePoints()
+    {
+        var generator = new PointGenerator();
+        Points = generator.Generate();
+    }
+
+    private void ExecuteKMeans()
+    {
+        var program = new KMeansAlgorithm();
+        Clusters = program.Execute(Points);
+    }
+
+    private double CalculateClusteringError()
+    {
+        double clusteringError = Clusters.Sum(c => c.Points.Sum(p => Functions.EuclideanDistance(c.Center.X, c.Center.Y, p.X, p.Y)));
+
+        return Math.Round(clusteringError, 2);
+    }
+}
